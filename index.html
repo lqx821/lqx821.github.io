@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人网站</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">个人知识库</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index01.html">AI工具</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index02.html">知识地图</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index04.html">作品集</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index06.html">AI知识</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-text">
+                    <h1 class="display-4">你好<span class="highlight"></span></h1>
+                    <p class="lead">西北大学新闻传播学院网络与新媒体专业廖奇香</p>
+                    <button class="welcome-btn btn btn-primary btn-lg" id="welcomeBtn">
+                        欢迎来到我的个人知识库
+                        <div class="welcome-btn-effect"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-down">
+            <span class="scroll-text">向下滚动探索更多</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- 在Hero Section后添加预览模态框 -->
+    <div class="quick-preview-modal" id="previewModal">
+        <div class="quick-preview-card">
+            <div class="preview-header">
+                <h3>学习概览</h3>
+                <button class="close-preview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-content">
+                <!-- 学习进度部分 -->
+                <div class="preview-section">
+                    <h4>学习进度</h4>
+                    <div class="preview-progress">
+                        <div class="progress-item">
+                            <div class="progress-label">
+                                <span>新媒体运营</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-label">
+                                <span>内容创作</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 最近更新部分 -->
+                <div class="preview-section">
+                    <h4>最近更新</h4>
+                    <div class="preview-updates">
+                        <div class="update-item">
+                            <i class="fas fa-book"></i>
+                            <div class="update-info">
+                                <h5>新媒体运营笔记更新</h5>
+                                <span>2024-03-21</span>
+                            </div>
+                        </div>
+                        <div class="update-item">
+                            <i class="fas fa-robot"></i>
+                            <div class="update-info">
+                                <h5>新增AI工具推荐</h5>
+                                <span>2024-03-20</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确保在body结束标签前添加脚本引用 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
