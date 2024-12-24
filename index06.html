@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI知识库</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        .hero-carousel .carousel-item {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .category-section {
+            padding: 50px 0;
+            background: var(--light);
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .category-card .icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover .icon {
+            transform: scale(1.1);
+        }
+
+        .article-list {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .article-list.active {
+            display: block;
+        }
+
+        .article-item {
+            padding: 15px;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 15px;
+            background: var(--light);
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .article-item:hover {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .article-item a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        .article-item h5 {
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .article-item p {
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .view-full {
+            position: relative;
+        }
+
+        .view-full::after {
+            content: '查看完整版';
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .article-item:hover .view-full::after {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        a[target="_blank"] {
+            position: relative;
+        }
+
+        a[target="_blank"]::after {
+            content: '\f35d';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        a[target="_blank"]:hover::after {
+            opacity: 1;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .toggle-articles {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        /* 分类导航样式 */
+        .category-nav {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0 15px;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--light);
+            color: var(--dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .nav-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .nav-btn span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-btn:hover i, .nav-btn.active i {
+            color: white;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .nav-btn {
+                padding: 8px 15px;
+                min-width: 90px;
+            }
+            
+            .nav-btn i {
+                font-size: 1.2rem;
+            }
+            
+            .nav-btn span {
+                font-size: 0.8rem;
+            }
+
+            /* 添加滚动条样式 */
+            .nav-buttons::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            .nav-buttons::-webkit-scrollbar-track {
+                background: var(--light);
+            }
+
+            .nav-buttons::-webkit-scrollbar-thumb {
+                background: var(--primary);
+                border-radius: 2px;
+            }
+        }
+
+        /* 内容区域样式 */
+        .category-content {
+            display: none;
+            padding: 40px 0;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+        /* 内容卡片样式 */
+        .content-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .content-card h4 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .content-card h5 {
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .content-card p {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .content-card .description {
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .content-card .content-details {
+            margin-bottom: 15px;
+        }
+
+        .content-card .tech-details {
+            margin-bottom: 15px;
+        }
+
+        .content-card .framework-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .content-card .framework-item {
+            background: var(--light);
+            border-radius: 5px;
+            padding: 10px;
+            width: calc(33.33% - 10px);
+        }
+
+        .content-card .case-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .content-card .case-item {
+            background: var(--light);
+            border-radius: 5px;
+            padding: 10px;
+            width: calc(33.33% - 10px);
+        }
+
+        .content-card .learn-more {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .content-card .learn-more:hover {
+            opacity: 0.7;
+        }
+
+        .content-card .view-full {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .content-card .view-full:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">个人知识库</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index01.html">AI工具</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index02.html">知识地图</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index04.html">作品集</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="index06.html">AI知识</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 轮播图部分 -->
+    <div id="aiCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#aiCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#aiCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#aiCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image: url('images/images2.png')">
+                <div class="carousel-caption">
+                    <h2>探索AI的无限可能</h2>
+                    <p>从基础概念到前沿技术，开启您的AI学习之旅</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('images/images3.png')">
+                <div class="carousel-caption">
+                    <h2>提示工程指南</h2>
+                    <p>掌握AI对话的艺术，提升prompt效率</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('images/images4.png')">
+                <div class="carousel-caption">
+                    <h2>实践案例分享</h2>
+                    <p>真实应用场景，深入理解AI技术</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#aiCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#aiCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- 在轮播图后，分类内容部分前添加分类导航 -->
+    <div class="category-nav">
+        <div class="container">
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-category="basic">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>基础知识</span>
+                </button>
+                <button class="nav-btn" data-category="prompt">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>提示词</span>
+                </button>
+                <button class="nav-btn" data-category="visualization">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <span>数据可视化</span>
+                </button>
+                <button class="nav-btn" data-category="industry">
+                    <i class="fa-solid fa-building"></i>
+                    <span>行业报告</span>
+                </button>
+                <button class="nav-btn" data-category="news">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>最新动态</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分类内容部分 -->
+    <section class="category-section">
+        <div class="container">
+            <!-- 基础知识分类内容 -->
+            <div class="category-content active" data-category="basic">
+                <div class="row">
+                    <!-- HTML/CSS基础 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-code"></i> HTML/CSS基础</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>HTML基础教程</h5>
+                                            <p>超文本标记语言基础知识</p>
+                                            <ul>
+                                                <li>HTML标签与属性</li>
+                                                <li>页面结构与布局</li>
+                                                <li>表单与多媒体</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/html/html-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>CSS样式指南</h5>
+                                            <p>层叠样式表设计技巧</p>
+                                            <ul>
+                                                <li>选择器与样式</li>
+                                                <li>盒模型与定位</li>
+                                                <li>响应式设计</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/css/css-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 前端框架 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-layer-group"></i> 前端框架</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="framework-list">
+                                        <div class="framework-item">
+                                            <h5>Bootstrap 5教程</h5>
+                                            <p>最流行的HTML、CSS和JS框架</p>
+                                            <ul>
+                                                <li>栅格系统</li>
+                                                <li>组件库</li>
+                                                <li>响应式布局</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/bootstrap5/bootstrap5-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="framework-item">
+                                            <h5>Tailwind CSS</h5>
+                                            <p>功能类优先的CSS框架</p>
+                                            <a href="https://www.runoob.com/tailwind-css/tailwind-css-tutorial.html" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 实用工具 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-tools"></i> 实用工具</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="tool-list">
+                                        <div class="tool-item">
+                                            <h5>Font Awesome</h5>
+                                            <p>强大的图标字体库和CSS框架</p>
+                                            <a href="https://www.runoob.com/font-awesome/fontawesome-tutorial.html" target="_blank" class="learn-more">
+                                                查看教程 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="tool-item">
+                                            <h5>在线工具</h5>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://www.runoob.com/try/bootstrap/layoutit/" target="_blank">
+                                                        Bootstrap可视化布局
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.runoob.com/try/color.html" target="_blank">
+                                                        HTML颜色选择器
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.runoob.com/try/try.php?filename=tryhtml_intro" target="_blank">
+                                                        HTML在线编辑器
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 基础知识分类第二行 -->
+                <div class="row mt-4">
+                    <!-- JavaScript教程 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fab fa-js"></i> JavaScript教程</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>JavaScript基础</h5>
+                                            <ul>
+                                                <li>基本语法与数据类型</li>
+                                                <li>函数与对象</li>
+                                                <li>DOM操作</li>
+                                                <li>事件处理</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/js/js-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>ES6+特性</h5>
+                                            <ul>
+                                                <li>箭头函数</li>
+                                                <li>解构赋值</li>
+                                                <li>Promise对象</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/w3cnote/es6-tutorial.html" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- jQuery教程 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-code"></i> jQuery教程</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>jQuery入门</h5>
+                                            <ul>
+                                                <li>选择器</li>
+                                                <li>事件处理</li>
+                                                <li>DOM操作</li>
+                                                <li>动画效果</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/jquery/jquery-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>jQuery实例</h5>
+                                            <p>常用功能示例和最佳实践</p>
+                                            <a href="https://www.runoob.com/jquery/jquery-examples.html" target="_blank" class="learn-more">
+                                                查看实例 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 响应式设计 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-mobile-alt"></i> 响应式设计</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>响应式布局基础</h5>
+                                            <ul>
+                                                <li>媒体查询</li>
+                                                <li>弹性布局</li>
+                                                <li>栅格系统</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/css3/css3-mediaqueries.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>Flexbox布局</h5>
+                                            <p>弹性盒子布局详解</p>
+                                            <a href="https://www.runoob.com/css3/css3-flexbox.html" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 基础知识分类第三行 -->
+                <div class="row mt-4">
+                    <!-- Vue.js教程 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fab fa-vuejs"></i> Vue.js教程</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>Vue.js基础</h5>
+                                            <ul>
+                                                <li>Vue实例与数据绑定</li>
+                                                <li>组件化开发</li>
+                                                <li>路由与状态管理</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/vue2/vue-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>Vue.js实战</h5>
+                                            <p>实际项目开发案例</p>
+                                            <a href="https://www.runoob.com/vue2/vue-examples.html" target="_blank" class="learn-more">
+                                                查看实例 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node.js教程 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fab fa-node-js"></i> Node.js教程</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="course-list">
+                                        <div class="course-item">
+                                            <h5>Node.js入门</h5>
+                                            <ul>
+                                                <li>环境搭建</li>
+                                                <li>模块系统</li>
+                                                <li>文件系统</li>
+                                                <li>Web服务器</li>
+                                            </ul>
+                                            <a href="https://www.runoob.com/nodejs/nodejs-tutorial.html" target="_blank" class="learn-more">
+                                                开始学习 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        <div class="course-item">
+                                            <h5>Express框架</h5>
+                                            <p>Node.js Web应用框架</p>
+                                            <a href="https://www.runoob.com/nodejs/nodejs-express-framework.html" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 前端开发工具 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-toolbox"></i> 开发工具</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="tool-list">
+                                        <div class="tool-item">
+                                            <h5>版本控制</h5>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://www.runoob.com/git/git-tutorial.html" target="_blank">
+                                                        Git基础教程
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.runoob.com/git/git-workflow.html" target="_blank">
+                                                        Git工作流
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="tool-item">
+                                            <h5>开发环境</h5>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://www.runoob.com/w3cnote/vscode-tutorial.html" target="_blank">
+                                                        VS Code使用指南
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.runoob.com/nodejs/nodejs-npm.html" target="_blank">
+                                                        NPM包管理
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI文章分类 -->
+            <div class="category-content" data-category="articles">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-file-alt"></i> 技术文章</h4>
+                            <div class="content-body">
+                                <div class="article-list">
+                                    <div class="article-item">
+                                        <h5>提示工程入门指南</h5>
+                                        <p>掌握AI对话的基本技巧</p>
+                                        <a href="https://www.promptingguide.ai/zh/introduction" target="_blank">阅读全文</a>
+                                    </div>
+                                    <div class="article-item">
+                                        <h5>大语言模型原理解析</h5>
+                                        <p>深入理解LLM的工作机制</p>
+                                        <a href="#" class="view-full">查看详情</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 补充应用实践文章卡片 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-laptop-code"></i> 应用实践</h4>
+                            <div class="content-body">
+                                <div class="article-list">
+                                    <div class="article-item">
+                                        <h5>AI辅助编程指南</h5>
+                                        <p>如何利用AI提升开发效率</p>
+                                        <a href="#" class="view-full">查看详情</a>
+                                    </div>
+                                    <div class="article-item">
+                                        <h5>AI内容创作实践</h5>
+                                        <p>AI在内容生产中的应用</p>
+                                        <a href="#" class="view-full">查看详情</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 补充学习资源卡片 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-graduation-cap"></i> 学习资源</h4>
+                            <div class="content-body">
+                                <div class="resource-list">
+                                    <div class="resource-item">
+                                        <h5>AI入门课程推荐</h5>
+                                        <p>精选AI学习路径和课程</p>
+                                        <a href="#" class="view-full">查看推荐</a>
+                                    </div>
+                                    <div class="resource-item">
+                                        <h5>实践项目合集</h5>
+                                        <p>动手实践AI项目案例</p>
+                                        <a href="#" class="view-full">浏览项目</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 行业报告分类 -->
+            <div class="category-content" data-category="industry">
+                <div class="row">
+                    <!-- 生成式AI报告 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-robot"></i> 生成式AI研究</h4>
+                            <div class="content-body">
+                                <div class="report-list">
+                                    <div class="report-item">
+                                        <span class="date">2024-03-21</span>
+                                        <h5>OpenAI最新技术突破</h5>
+                                        <p>o3模型在数学、编程等多项测试超越前代，AGI评测基准达87.5%</p>
+                                        <a href="https://mp.weixin.qq.com/s/BdLjKBa2VxoE5Nxh4WuBdQ" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                    <div class="report-item">
+                                        <span class="date">2024-03-20</span>
+                                        <h5>Google Gemini最新进展</h5>
+                                        <p>Gemini 2.0 Flash Thinking推理能力增强，性能对标OpenAI o1系列</p>
+                                        <a href="https://mp.weixin.qq.com/s/NkTP17j6HYIz95sHxCameA" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI技术创新 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-microchip"></i> 技术创新</h4>
+                            <div class="content-body">
+                                <div class="report-list">
+                                    <div class="report-item">
+                                        <span class="date">2024-03-19</span>
+                                        <h5>英伟达3D建模突破</h5>
+                                        <p>Meshtron实现AI一键生成高保真3D网格，革新建模流程</p>
+                                        <a href="https://mp.weixin.qq.com/s/_HbpC1VYume4N0Rz03IG_Q" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                    <div class="report-item">
+                                        <span class="date">2024-03-18</span>
+                                        <h5>AI气味传递技术</h5>
+                                        <p>Osmo公司利用AI和气味数据库实现气味生成与传递</p>
+                                        <a href="https://mp.weixin.qq.com/s/VGPiEkiw96clfmQfprtb3w" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 行业应用 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-industry"></i> 行业应用</h4>
+                            <div class="content-body">
+                                <div class="report-list">
+                                    <div class="report-item">
+                                        <span class="date">2024-03-20</span>
+                                        <h5>AI文化遗产保护</h5>
+                                        <p>全球首个AI圣彼得大教堂数字孪生项目，40万照片毫米级3D还原</p>
+                                        <a href="https://mp.weixin.qq.com/s/hDMQj02hbCDlGhx9LiuLaQ" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                    <div class="report-item">
+                                        <span class="date">2024-03-19</span>
+                                        <h5>AI机器人发展</h5>
+                                        <p>Apptronik与DeepMind合作推进人形机器人技术</p>
+                                        <a href="https://mp.weixin.qq.com/s/df0erfUW7lllT-ORjS84BQ" target="_blank" class="learn-more">
+                                            查看报告 <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最新动态分类内容 -->
+            <div class="category-content" data-category="news">
+                <div class="row">
+                    <!-- AI大模型进展 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-brain"></i> AI大模型进展</h4>
+                            <div class="content-body">
+                                <div class="news-list">
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>Claude 3系列模型发布</h5>
+                                        <p>Anthropic发布Claude 3系列模型，包括Opus、Sonnet和Haiku三个版本</p>
+                                        <div class="tags">
+                                            <span class="tag">大模型</span>
+                                            <span class="tag">突破</span>
+                                        </div>
+                                    </div>
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>Gemini 1.5发布</h5>
+                                        <p>Google推出Gemini 1.5，支持百万token上下文</p>
+                                        <div class="tags">
+                                            <span class="tag">更新</span>
+                                            <span class="tag">性能提升</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 技术创新 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-lightbulb"></i> 技术创新</h4>
+                            <div class="content-body">
+                                <div class="news-list">
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>Sora视频生成技术</h5>
+                                        <p>OpenAI发布文本生成视频模型Sora，开创视频生成新纪元</p>
+                                        <div class="tags">
+                                            <span class="tag">视频生成</span>
+                                            <span class="tag">创新</span>
+                                        </div>
+                                    </div>
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>多模态理解突破</h5>
+                                        <p>GPT-4V能力升级，视觉理解更进一步</p>
+                                        <div class="tags">
+                                            <span class="tag">多模态</span>
+                                            <span class="tag">升级</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 行业应用 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-rocket"></i> 行业应用</h4>
+                            <div class="content-body">
+                                <div class="news-list">
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>AI助手新突破</h5>
+                                        <p>微软发布Copilot Pro，提供更强的AI助手能力</p>
+                                        <div class="tags">
+                                            <span class="tag">生产力</span>
+                                            <span class="tag">工具</span>
+                                        </div>
+                                    </div>
+                                    <div class="news-item">
+                                        <span class="date">2024-03</span>
+                                        <h5>AI医疗新进展</h5>
+                                        <p>AI在医学影像诊断领域取得重要突破</p>
+                                        <div class="tags">
+                                            <span class="tag">医疗</span>
+                                            <span class="tag">应用</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 补充行业报告分类的内容 -->
+            <div class="category-content" data-category="industry">
+                <div class="row">
+                    <!-- 市场研究报告 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-chart-pie"></i> 市场研究</h4>
+                            <div class="content-body">
+                                <div class="report-list">
+                                    <div class="report-item">
+                                        <h5>2024全球AI市场分析</h5>
+                                        <p>AI行业市场规模与发展预测</p>
+                                        <a href="#" class="view-full">查看报告</a>
+                                    </div>
+                                    <div class="report-item">
+                                        <h5>AI应用趋势研究</h5>
+                                        <p>各行AI应用现状与趋势</p>
+                                        <a href="#" class="view-full">查看报告</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 技术趋势报告 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-microchip"></i> 技术趋势</h4>
+                            <div class="content-body">
+                                <div class="report-list">
+                                    <div class="report-item">
+                                        <h5>AI技术发展报告</h5>
+                                        <p>前沿技术研究与发展方向</p>
+                                        <a href="#" class="view-full">查看报告</a>
+                                    </div>
+                                    <div class="report-item">
+                                        <h5>AI框架对比分析</h5>
+                                        <p>主流AI开发框架评测</p>
+                                        <a href="#" class="view-full">查看报告</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提示词分类内容 -->
+            <div class="category-content" data-category="prompt">
+                <div class="row">
+                    <!-- 提示工程基础 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-book"></i> 提示工程基础</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="prompt-list">
+                                        <div class="prompt-item">
+                                            <h5>基本概念</h5>
+                                            <ul>
+                                                <li>大语言模型设置</li>
+                                                <li>提示词要素</li>
+                                                <li>设计提示的通用技巧</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/introduction" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提示技术 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-tools"></i> 提示技术</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="technique-list">
+                                        <div class="technique-item">
+                                            <h5>核心技术</h5>
+                                            <ul>
+                                                <li>零样本提示</li>
+                                                <li>少样本提示</li>
+                                                <li>链式思考（CoT）提示</li>
+                                                <li>思维树（ToT）</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/techniques" target="_blank" class="learn-more">
+                                                查看详情 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提示应用 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-laptop-code"></i> 提示应用</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="application-list">
+                                        <div class="application-item">
+                                            <h5>应用场景</h5>
+                                            <ul>
+                                                <li>生成数据</li>
+                                                <li>代码生成</li>
+                                                <li>文本分类</li>
+                                                <li>信息提取</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/applications" target="_blank" class="learn-more">
+                                                探索应用 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 提示词分类第二行 -->
+                <div class="row mt-4">
+                    <!-- 提示模式 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-sitemap"></i> 提示模式</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="pattern-list">
+                                        <div class="pattern-item">
+                                            <h5>常用提示模式</h5>
+                                            <ul>
+                                                <li>角色提示</li>
+                                                <li>任务分解</li>
+                                                <li>思维链提示</li>
+                                                <li>自我反思</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/techniques/cot" target="_blank" class="learn-more">
+                                                了解更多 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提示优化 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-sliders-h"></i> 提示优化</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="optimization-list">
+                                        <div class="optimization-item">
+                                            <h5>优化策略</h5>
+                                            <ul>
+                                                <li>提示词精炼</li>
+                                                <li>上下文管理</li>
+                                                <li>约束设置</li>
+                                                <li>示例引导</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/techniques/fewshot" target="_blank" class="learn-more">
+                                                查看详情 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提示模板 -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h4><i class="fas fa-file-alt"></i> 提示模板</h4>
+                            <div class="content-body">
+                                <div class="content-details">
+                                    <div class="template-list">
+                                        <div class="template-item">
+                                            <h5>常用模板</h5>
+                                            <ul>
+                                                <li>内容创作模板</li>
+                                                <li>代码生成模板</li>
+                                                <li>数据分析模板</li>
+                                                <li>问题解决模板</li>
+                                            </ul>
+                                            <a href="https://www.promptingguide.ai/zh/techniques/zeroshot" target="_blank" class="learn-more">
+                                                获取模板 <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 添加数据可视化内容区域 -->
+            <div class="category-content" data-category="visualization">
+                <div class="row">
+                    <!-- AI发展时间轴 -->
+                    <div class="col-lg-6">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-timeline"></i> AI发展历程</h4>
+                            <div class="content-body">
+                                <!-- 图表容器 -->
+                                <div id="timelineChart" style="width: 100%; height: 400px;"></div>
+                                <!-- 图表说明 -->
+                                <div class="chart-description">
+                                    <p>AI技术发展重要时间节点及里程碑</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI应用领域分布 -->
+                    <div class="col-lg-6">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-chart-pie"></i> AI应用领域分布</h4>
+                            <div class="content-body">
+                                <div id="pieChart" style="width: 100%; height: 400px;"></div>
+                                <div class="chart-description">
+                                    <p>AI在各行业的应用分布情况</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二行图表 -->
+                <div class="row mt-4">
+                    <!-- AI市场规模 -->
+                    <div class="col-lg-6">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-chart-column"></i> AI市场规模趋势</h4>
+                            <div class="content-body">
+                                <div id="barChart" style="width: 100%; height: 400px;"></div>
+                                <div class="chart-description">
+                                    <p>全球AI市场规模增长趋势</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI技术热度 -->
+                    <div class="col-lg-6">
+                        <div class="content-card">
+                            <h4><i class="fa-solid fa-chart-line"></i> AI技术热度分析</h4>
+                            <div class="content-body">
+                                <div id="radarChart" style="width: 100%; height: 400px;"></div>
+                                <div class="chart-description">
+                                    <p>各AI技术方向热度指数</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 当DOM加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有图表
+            function initCharts() {
+                // 初始化时间轴图表
+                const timelineChart = echarts.init(document.getElementById('timelineChart'));
+                timelineChart.setOption({
+                    backgroundColor: '#1a1a1a',
+                    title: {
+                        text: 'AI发展历程',
+                        textStyle: { 
+                            color: '#fff',
+                            fontSize: 16,
+                            fontWeight: 'normal'
+                        },
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        textStyle: { color: '#333' },
+                        formatter: '{b}年: AI发展指数 {c}'
+                    },
+                    grid: {
+                        top: '15%',
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['1950', '1960', '1970', '1980', '1990', '2000', '2010', '2020'],
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 12
+                        },
+                        axisLine: {
+                            lineStyle: { color: '#666' }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: '发展指数',
+                        nameTextStyle: { color: '#fff' },
+                        axisLabel: { color: '#fff' },
+                        splitLine: {
+                            lineStyle: { 
+                                color: 'rgba(255,255,255,0.1)',
+                                type: 'dashed'
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '发展进程',
+                        type: 'line',
+                        smooth: true,
+                        symbolSize: 8,
+                        data: [10, 20, 30, 40, 50, 60, 80, 100],
+                        lineStyle: {
+                            width: 4,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: '#67e0e3'
+                            }, {
+                                offset: 1,
+                                color: '#37a2da'
+                            }])
+                        },
+                        areaStyle: {
+                            opacity: 0.3,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(103,224,227,0.3)'
+                            }, {
+                                offset: 1,
+                                color: 'rgba(55,162,218,0.1)'
+                            }])
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                color: '#fff',
+                                borderColor: '#67e0e3',
+                                borderWidth: 2,
+                                shadowColor: 'rgba(103,224,227,0.5)',
+                                shadowBlur: 10
+                            }
+                        }
+                    }]
+                });
+
+                // 初始化饼图
+                const pieChart = echarts.init(document.getElementById('pieChart'));
+                pieChart.setOption({
+                    backgroundColor: '#1a1a1a',
+                    title: {
+                        text: 'AI应用领域分布',
+                        textStyle: { 
+                            color: '#fff',
+                            fontSize: 16,
+                            fontWeight: 'normal'
+                        },
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        textStyle: { color: '#333' },
+                        formatter: '{b}: {c}% ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        right: '5%',
+                        top: 'center',
+                        textStyle: { color: '#fff' }
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['40%', '50%'],
+                        avoidLabelOverlap: true,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#1a1a1a',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: true,
+                            color: '#fff',
+                            formatter: '{b}\n{c}%'
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        data: [
+                            {value: 30, name: '医疗健康', itemStyle: {color: '#37a2da'}},
+                            {value: 25, name: '金融科技', itemStyle: {color: '#67e0e3'}},
+                            {value: 20, name: '智能制造', itemStyle: {color: '#9fe6b8'}},
+                            {value: 15, name: '教育', itemStyle: {color: '#ffdb5c'}},
+                            {value: 10, name: '其他', itemStyle: {color: '#ff9f7f'}}
+                        ]
+                    }]
+                });
+
+                // 初始化柱状图
+                const barChart = echarts.init(document.getElementById('barChart'));
+                barChart.setOption({
+                    backgroundColor: '#1a1a1a',
+                    title: {
+                        text: 'AI市场规模(亿美元)',
+                        textStyle: { 
+                            color: '#fff',
+                            fontSize: 16,
+                            fontWeight: 'normal'
+                        },
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        textStyle: { color: '#333' }
+                    },
+                    grid: {
+                        top: '15%',
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['2018', '2019', '2020', '2021', '2022', '2023'],
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 12
+                        },
+                        axisLine: {
+                            lineStyle: { color: '#666' }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: { color: '#fff' },
+                        splitLine: {
+                            lineStyle: { 
+                                color: 'rgba(255,255,255,0.1)',
+                                type: 'dashed'
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '市场规模',
+                        type: 'bar',
+                        data: [1000, 1500, 2300, 3500, 5000, 7000],
+                        barWidth: '40%',
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: '#67e0e3'
+                            }, {
+                                offset: 1,
+                                color: '#37a2da'
+                            }]),
+                            borderRadius: [4, 4, 0, 0]
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: '#7cedef'
+                                }, {
+                                    offset: 1,
+                                    color: '#4bb5e6'
+                                }])
+                            }
+                        }
+                    }]
+                });
+
+                // 初始化雷达图
+                const radarChart = echarts.init(document.getElementById('radarChart'));
+                radarChart.setOption({
+                    backgroundColor: '#1a1a1a',
+                    title: {
+                        text: 'AI技术热度分析',
+                        textStyle: { 
+                            color: '#fff',
+                            fontSize: 16,
+                            fontWeight: 'normal'
+                        },
+                        left: 'center'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        textStyle: { color: '#333' }
+                    },
+                    radar: {
+                        indicator: [
+                            { name: '机器学习', max: 100 },
+                            { name: '深度学习', max: 100 },
+                            { name: '自然语言处理', max: 100 },
+                            { name: '计算机视觉', max: 100 },
+                            { name: '语音识别', max: 100 }
+                        ],
+                        shape: 'circle',
+                        splitNumber: 5,
+                        axisName: {
+                            color: '#fff',
+                            fontSize: 12
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        },
+                        splitArea: {
+                            show: true,
+                            areaStyle: {
+                                color: ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.05)']
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'radar',
+                        data: [{
+                            value: [90, 95, 85, 80, 75],
+                            name: '热度指数',
+                            symbol: 'circle',
+                            symbolSize: 6,
+                            lineStyle: {
+                                color: '#37a2da',
+                                width: 2
+                            },
+                            areaStyle: {
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                                    {
+                                        offset: 0,
+                                        color: 'rgba(55,162,218,0.5)'
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: 'rgba(55,162,218,0.1)'
+                                    }
+                                ])
+                            },
+                            emphasis: {
+                                lineStyle: {
+                                    width: 4
+                                }
+                            }
+                        }]
+                    }]
+                });
+
+                return {
+                    timelineChart,
+                    pieChart,
+                    barChart,
+                    radarChart
+                };
+            }
+
+            let charts = null;
+
+            // 监听分类切换
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const categoryContents = document.querySelectorAll('.category-content');
+
+            // 如果当前在可视化分类，立即初始化图表
+            const visualizationContent = document.querySelector('[data-category="visualization"]');
+            if (visualizationContent && visualizationContent.classList.contains('active')) {
+                charts = initCharts();
+            }
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const category = this.getAttribute('data-category');
+                    categoryContents.forEach(content => {
+                        if (content.getAttribute('data-category') === category) {
+                            content.classList.add('active');
+                            if (category === 'visualization') {
+                                setTimeout(() => {
+                                    charts = initCharts();
+                                }, 300);
+                            }
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // 监听窗口大小变化
+            window.addEventListener('resize', function() {
+                if (charts) {
+                    Object.values(charts).forEach(chart => chart.resize());
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

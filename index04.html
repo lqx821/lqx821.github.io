@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="portfolio-page">
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Logo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index01.html">AI工具</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index02.html">知识地图</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="index04.html">作品集</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index06.html">AI知识</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 作品集头部 -->
+    <div class="page-banner">
+        <!-- 添加轮播图组件 -->
+        <div id="portfolioBanner" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <!-- 轮播图指示器 -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#portfolioBanner" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#portfolioBanner" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#portfolioBanner" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <!-- 轮播图片 -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="images/images2.png" class="d-block w-100" alt="作品集">
+                </div>
+                <div class="carousel-item">
+                    <img src="images/images3.png" class="d-block w-100" alt="作品集">
+                </div>
+                <div class="carousel-item">
+                    <img src="images/images4.png" class="d-block w-100" alt="作品集">
+                </div>
+            </div>
+
+            <!-- 轮播控制按钮 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#portfolioBanner" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#portfolioBanner" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- 内容覆盖层 -->
+        <div class="banner-content">
+            <div class="container">
+                <h1>作品集</h1>
+                <p class="lead">展示我的项目和创意作品</p>
+                <div class="portfolio-nav">
+                    <button class="nav-btn active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        <span>全部作品</span>
+                    </button>
+                    <button class="nav-btn" data-category="design">
+                        <i class="fas fa-palette"></i>
+                        <span>设计作品</span>
+                    </button>
+                    <button class="nav-btn" data-category="writing">
+                        <i class="fas fa-newspaper"></i>
+                        <span>新闻稿件</span>
+                    </button>
+                    <button class="nav-btn" data-category="video">
+                        <i class="fas fa-video"></i>
+                        <span>视频作品</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 作品展示区 -->
+    <section class="portfolio-section">
+        <div class="container">
+            <!-- 作品网格 -->
+            <div class="portfolio-grid">
+                <!-- 设计作品 -->
+                <div class="portfolio-item design">
+                    <div class="portfolio-card">
+                        <img src="images/images5.png" alt="新媒体海报设计" class="design-image">
+                        <div class="project-info">
+                            <h3>新媒体海报设计</h3>
+                            <p>校园活动系列海报设计</p>
+                            <div class="project-tags">
+                                <span>平面设计</span>
+                                <span>品牌设计</span>
+                            </div>
+                            <a href="images/images5.png" class="view-project" target="_blank">
+                                <i class="fas fa-eye"></i> 查看大图
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 在第一个设计作品后添加 -->
+                <div class="portfolio-item design">
+                    <div class="portfolio-card">
+                        <img src="images/images6.jpg" alt="品牌海报设计" class="design-image">
+                        <div class="project-info">
+                            <h3>品牌海报设计</h3>
+                            <p>品牌形象设计与推广</p>
+                            <div class="project-tags">
+                                <span>品牌设计</span>
+                                <span>视觉设计</span>
+                            </div>
+                            <a href="images/images6.jpg" class="view-project" target="_blank">
+                                <i class="fas fa-eye"></i> 查看大图
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新闻稿作品 -->
+                <div class="portfolio-item writing">
+                    <div class="portfolio-card">
+                        <div class="news-preview">
+                            <h3>陕西省2025届普通高校合类毕业生联盟招聘会圆满举办</h3>
+                            <p class="news-excerpt">校园新闻报道</p>
+                            <div class="project-tags">
+                                <span>新闻写作</span>
+                                <span>活动报道</span>
+                            </div>
+                            <a href="news/news1.pdf" class="view-project" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>查看PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item writing">
+                    <div class="portfolio-card">
+                        <div class="news-preview">
+                            <h3>西北大学举办2024年春季校园招聘会</h3>
+                            <p class="news-excerpt">校园新闻报道</p>
+                            <div class="project-tags">
+                                <span>新闻写作</span>
+                                <span>活动报道</span>
+                            </div>
+                            <a href="news/news2.pdf" class="view-project" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>查看PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item writing">
+                    <div class="portfolio-card">
+                        <div class="news-preview">
+                            <h3>西北大学信息科学与技术学院举办职业发展讲座</h3>
+                            <p class="news-excerpt">校园新闻报道</p>
+                            <div class="project-tags">
+                                <span>新闻写作</span>
+                                <span>活动报道</span>
+                            </div>
+                            <a href="news/news3.pdf" class="view-project" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>查看PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item writing">
+                    <div class="portfolio-card">
+                        <div class="news-preview">
+                            <h3>西北大学新闻传播学院开展"媒体融合"主题讲座</h3>
+                            <p class="news-excerpt">校园新闻报道</p>
+                            <div class="project-tags">
+                                <span>新闻写作</span>
+                                <span>活动报道</span>
+                            </div>
+                            <a href="news/news4.pdf" class="view-project" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>查看PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视频作品 -->
+                <div class="portfolio-item video">
+                    <div class="portfolio-card">
+                        <div class="video-preview">
+                            <video poster="images/portfolio/video-thumb1.jpg">
+                                <source src="videos/campus-life.mp4" type="video/mp4">
+                            </video>
+                            <div class="project-info">
+                                <h3>校园生活记录</h3>
+                                <p>记录美好的校园时光</p>
+                                <div class="project-tags">
+                                    <span>视频制作</span>
+                                    <span>记录片</span>
+                                </div>
+                                <button class="play-btn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 作品筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新按钮状态
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 筛选作品
+                    const category = this.getAttribute('data-category');
+                    portfolioItems.forEach(item => {
+                        if (category === 'all' || item.classList.contains(category)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // 视频播放功能
+            const playBtns = document.querySelectorAll('.play-btn');
+            playBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const video = this.closest('.video-preview').querySelector('video');
+                    if (video.paused) {
+                        video.play();
+                        this.innerHTML = '<i class="fas fa-pause"></i>';
+                    } else {
+                        video.pause();
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                });
+            });
+        });
+
+        // 初始化轮播图
+        document.addEventListener('DOMContentLoaded', function() {
+            new bootstrap.Carousel(document.querySelector('#portfolioBanner'), {
+                interval: 5000, // 5秒切换一次
+                wrap: true,
+                keyboard: true
+            });
+        });
+    </script>
+</body>
+</html> 
